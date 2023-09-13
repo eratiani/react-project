@@ -2,7 +2,6 @@
 const apiUrl =
   "https://technical-project-5fc11-default-rtdb.europe-west1.firebasedatabase.app/sectors.json";
 export async function fetchSectors() {
-  console.log(apiUrl);
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {

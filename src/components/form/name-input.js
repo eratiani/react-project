@@ -1,4 +1,7 @@
-const NameInput = () => {
+const NameInput = ({ onChange }) => {
+  const handleChange = (event) => {
+    onChange(event.target.value);
+  };
   return (
     <div className="py-2 flex justify-between w-full md:w-2/5">
       <label
@@ -11,6 +14,8 @@ const NameInput = () => {
         className="w-3/5  border-0 bg-transparent py-1.5 pl-1 text-gray-900  focus:ring-0 sm:text-sm sm:leading-6"
         id="name"
         type="text"
+        name="userName"
+        onChange={handleChange}
       />
     </div>
   );
