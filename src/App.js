@@ -1,29 +1,20 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 import { Switch } from "@headlessui/react";
+import { fetchSectors } from "./database/server-requests";
+import SubmitForm from "./components/form/form";
 function App() {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
   const [agreed, setAgreed] = useState(false);
   const [sectors, setSectors] = useState([]);
-  const apiUrl =
-    "https://technical-project-5fc11-default-rtdb.europe-west1.firebasedatabase.app/sectors.json";
 
   useEffect(() => {
-    fetch(apiUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("smth went wrong");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setSectors(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    fetchSectors().then((data) => {
+      console.log(data);
+      setSectors(data);
+    });
   }, []);
   return (
     <div className="container mx-auto p-4">
@@ -31,35 +22,8 @@ function App() {
         Please enter your name and pick the Sectors you are currently involved
         in.
       </h1>
-      <form
-        action="#"
-        method="POST"
-        className="w-full flex justify-center flex-col items-center"
-      >
-        <div className="py-2 flex justify-between w-full md:w-2/5">
-          <label
-            htmlFor="name"
-            className="label text-sm font-medium leading-6 text-gray-900"
-          >
-            enter name
-          </label>
-          <input
-            className="w-3/5  border-0 bg-transparent py-1.5 pl-1 text-gray-900  focus:ring-0 sm:text-sm sm:leading-6"
-            id="name"
-            type="text"
-          />
-        </div>
-        <select
-          className="w-full md:w-2/5 p-2 border rounded"
-          multiple
-          size="5"
-        >
-          {sectors.map((sector, index) => (
-            <option key={index} value={sector}>
-              {sector}
-            </option>
-          ))}
-        </select>
+      <SubmitForm sectors={sectors} />
+      <form>
         <Switch.Group as="div" className="flex gap-x-4 sm:col-span-2">
           <div className="flex h-6 items-center">
             <Switch
@@ -88,15 +52,6 @@ function App() {
             .
           </Switch.Label>
         </Switch.Group>
-
-        <div className="mt-10">
-          <button
-            type="submit"
-            className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            save
-          </button>
-        </div>
       </form>
       {/* Add other form fields and Save button */}
     </div>
