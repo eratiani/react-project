@@ -1,17 +1,30 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { useState } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { useState, useEffect } from "react";
 import { Switch } from "@headlessui/react";
-import sectorData from "./sectors.json";
 function App() {
-  const sectors = sectorData.sectors;
-
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
   const [agreed, setAgreed] = useState(false);
+  const [sectors, setSectors] = useState([]);
+  const apiUrl =
+    "https://technical-project-5fc11-default-rtdb.europe-west1.firebasedatabase.app/sectors.json";
 
+  useEffect(() => {
+    fetch(apiUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("smth went wrong");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setSectors(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-xl text-center font-bold mb-4">
