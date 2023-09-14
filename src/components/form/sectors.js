@@ -1,4 +1,6 @@
-const Sectors = ({ sectors, onChange }) => {
+import { useEffect } from "react";
+
+const Sectors = ({ sectors, onChange, currSector }) => {
   const handleSectorChange = (event) => {
     const selectedSectors = Array.from(
       event.target.selectedOptions,
@@ -6,6 +8,12 @@ const Sectors = ({ sectors, onChange }) => {
     );
     onChange(selectedSectors);
   };
+  useEffect(() => {
+    const selectElement = document.querySelector("select[name='sector']");
+    if (selectElement) {
+      selectElement.value = currSector;
+    }
+  }, [currSector]);
   return (
     <select
       name="sector"

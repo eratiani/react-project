@@ -1,7 +1,13 @@
-const NameInput = ({ onChange }) => {
+import { useEffect } from "react";
+
+const NameInput = ({ onChange, nameValue }) => {
   const handleChange = (event) => {
     onChange(event.target.value);
   };
+  useEffect(() => {
+    const namInp = document.getElementById("name");
+    if (nameValue) namInp.value = nameValue;
+  }, [nameValue]);
   return (
     <div className="py-2 flex justify-between w-full md:w-2/5">
       <label

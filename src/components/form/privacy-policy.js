@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Switch } from "@headlessui/react";
-const PrivacyPol = ({ onChange }) => {
+
+const PrivacyPol = ({ onChange, privacySelected }) => {
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
@@ -9,11 +10,15 @@ const PrivacyPol = ({ onChange }) => {
     onChange(isChecked);
     setAgreed(isChecked);
   };
+  useState(() => {
+    setAgreed(privacySelected ? true : false);
+  }, [privacySelected]);
   return (
     <Switch.Group as="div" className="flex gap-x-4 sm:col-span-2">
       <div className="flex h-6 items-center">
         <Switch
           name="privacy"
+          id="privacy"
           checked={agreed}
           onChange={handlePrivacyPolicyChange}
           className={classNames(

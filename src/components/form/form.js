@@ -1,16 +1,24 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import BtnSave from "../utility/btn-save";
 import NameInput from "./name-input";
 import Sectors from "./sectors";
 import PrivacyPol from "./privacy-policy";
 import { updateCurrForm } from "./services/form.service";
-import { useNavigate } from "react-router-dom";
-const SubmitForm = ({ sectors }) => {
+import {
+  getCurrentForm,
+  updateRequestKey,
+  getRequestKey,
+} from "./services/form.service";
+import { setUserData, updateUserData } from "../../database/server-requests";
+
+const SubmitForm = ({ sectors, currData }) => {
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
-    name: false,
-    sector: false,
-    privacy: false,
+    name: currData?.name ? true : false,
+    sector: currData?.name ? true : false,
+    privacy: currData?.name ? true : false,
   });
 
   const isFormValid = () => {
@@ -30,7 +38,7 @@ const SubmitForm = ({ sectors }) => {
   const handlePrivacyPolicyChange = (isChecked) => {
     setFormState((prevState) => ({ ...prevState, privacy: isChecked }));
   };
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const formValue = {
@@ -38,10 +46,21 @@ const SubmitForm = ({ sectors }) => {
       sector: Array.from(formData.getAll("sector")),
       privacy: formData.get("privacy") === "on",
     };
-
-    if (isFormValid()) {
-      updateCurrForm(formValue);
-      navigate("/projects");
+    if (currData?.name) {
+      if (isFormValid()) {
+        updateCurrForm(formValue);
+        const reqKey = getRequestKey().name;
+        await updateUserData(reqKey, formValue);
+        navigate("/projects");
+      }
+    } else {
+      if (isFormValid()) {
+        updateCurrForm(formValue);
+        await setUserData(getCurrentForm()).then((data) => {
+          updateRequestKey(data);
+        });
+        navigate("/projects");
+      }
     }
   };
   return (
@@ -51,10 +70,17 @@ const SubmitForm = ({ sectors }) => {
       className="w-full flex justify-center flex-col items-center"
       onSubmit={handleSubmit}
     >
-      <NameInput onChange={handleNameInputChange} />
-      <Sectors sectors={sectors} onChange={handleSectorChange} />
-      <PrivacyPol onChange={handlePrivacyPolicyChange} />
-      <BtnSave disabled={!isFormValid()} />
+      <NameInput onChange={handleNameInputChange} nameValue={currData?.name} />
+      <Sectors
+        sectors={sectors}
+        onChange={handleSectorChange}
+        currSector={currData?.sector}
+      />
+      <PrivacyPol
+        onChange={handlePrivacyPolicyChange}
+        privacySelected={currData.privacy}
+      />
+      <BtnSave disabled={!isFormValid()} type={"save"} />
     </form>
   );
 };

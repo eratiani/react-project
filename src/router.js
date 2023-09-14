@@ -1,11 +1,10 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import SecondPage from "./components/user-input-page/user-input";
 import App from "./App";
-const root = ReactDOM.createRoot(document.getElementById("root"));
 const AppRouter = () => {
-  return root.render(
+  return (
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<App />} />
