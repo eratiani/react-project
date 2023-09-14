@@ -4,7 +4,9 @@ import NameInput from "./name-input";
 import Sectors from "./sectors";
 import PrivacyPol from "./privacy-policy";
 import { updateCurrForm } from "./services/form.service";
+import { useNavigate } from "react-router-dom";
 const SubmitForm = ({ sectors }) => {
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     name: false,
     sector: false,
@@ -34,10 +36,13 @@ const SubmitForm = ({ sectors }) => {
     const formValue = {
       name: formData.get("userName"),
       sector: Array.from(formData.getAll("sector")),
-      privacy: formData.get("privacy") === "on", // Assuming the privacy field is a checkbox
+      privacy: formData.get("privacy") === "on",
     };
 
-    if (isFormValid()) updateCurrForm(formValue);
+    if (isFormValid()) {
+      updateCurrForm(formValue);
+      navigate("/projects");
+    }
   };
   return (
     <form
